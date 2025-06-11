@@ -24,9 +24,10 @@ async function main(){
         'database': process.env.DB_NAME,
         'password': process.env.DB_PASSWORD
     })
-    
-    app.get('/', (req,res) => {
-        res.send('Hello, World!');
+
+    app.get('/customers', async (req,res) => {
+     let [customers] = await connection.execute('SELECT * FROM Customers')
+     res.send(customers)
     });
     
 }
