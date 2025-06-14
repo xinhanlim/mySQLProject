@@ -3,10 +3,10 @@
 {{#block "content"}}
 <form method = "POST" class="mb-3">
     <div class=" alert alert-danger">
-        <p> Are you sure you want to delete {{customer.first_name}},{{customer.last_name}}</p>
-        <div>
+        <p> Are you sure you want to delete {{customer.first_name}} {{customer.last_name}}</p>
+        <div class="mb-3">
             <input type="submit" class="alert alert-danger" value="Confirm Delete"/>
-            </a href="/customers" class="btn btn-primary">Cancel Delete</a>
+            <a href="/customers" class="btn btn-success">Cancel Delete</a>
         </div>
     </div>
     

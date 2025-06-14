@@ -52,11 +52,42 @@ VALUES(?,?,?,?);`
 
     app.get('/customers/:id/delete', async (req,res) => {
         const customer_id = req.params.id;
-        const [customers] = await connection.execute(`SELECT * FROM Customers Where customer_id = ?`,[customer_id]);
-        res.render('customers/delete',{
-            customers
+        const [rows] = await connection.execute(`SELECT * FROM Customers Where customer_id = ?`, [customer_id]);
+        const customer = rows[0];
+        res.render('customers/delete', {
+            customer
         })
     });
+
+    app.post('/customers/:id/delete', async (req,res) => {
+        try{
+            const customer_id = req.params.id;
+            await connection.execute(`DELETE FROM Sales WHERE customer_id = ? `, [customer_id]);
+            await connection.execute(`DELETE FROM EmployeeCustomer WHERE customer_id = ?`, [customer_id]);
+            await connection.execute(`DELETE FROM Customers WHERE customer_id = ?`, [customer_id]);
+            res.redirect('/customers');
+        }catch(e){
+            res.send("Unable to delete due to relationship. Try Again Later")
+            console.log(e);
+        };
+    });
+
+    app.get('/customers/:id/update', async (req,res) =>{
+        const customer_id = req.params.id;
+        const [rows] = await connection.execute(`SELECT * From Customers WHERE customer_id = ? `, [customer_id]);
+        const [companies] = await connection.execute(`SELECT * From Companies`);
+        res.render('customers/update', {
+            customer: rows[0],
+            companies
+        });
+    })
+
+    app.post('/customers/:id/update', async (req,res) => {
+        const customer_id = req.params.id;
+        const {first_name, last_name, rating, company_id} = req.body;
+        await connection.execute(`UPDATE Customers Set first_name=?, last_name=?, rating=?, company_id=? WHERE customer_id = ?`, [first_name,last_name, rating ,company_id, customer_id])
+        res.redirect('/customers');
+    })
 
 
     app.get('/employees', async (req,res) => {

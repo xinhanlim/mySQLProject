@@ -3,7 +3,7 @@
 {{#block "content"}}
 <h1> All Customer </h1>
 
-<table class= "table">
+<table class="table">
     <thead>
         <tr>
             <th>first_name</th>
@@ -19,8 +19,14 @@
             <td>{{this.last_name}}</td>
             <td>{{this.rating}}</td>
             <td>{{this.name}}</td>
+            <td>
+                <a href="/customers/{{this.customer_id}}/update" class="btn btn-primary">Update</a>
+            </td>
+            <td>
+                <a href="/customers/{{this.customer_id}}/delete" class="btn btn-danger">Delete</a>
+            </td>
         </tr>
-          {{/each}}
+        {{/each}}
     </tbody>
 </table>
 {{/block}}
