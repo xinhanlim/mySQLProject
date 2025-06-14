@@ -26,9 +26,31 @@ async function main(){
     })
 
     app.get('/customers', async (req,res) => {
-     let [customers] = await connection.execute('SELECT * FROM Customers')
-     res.send(customers)
+     let [customers] = await connection.execute(`SELECT * FROM Customers
+    JOIN Companies ON Customers.company_id = Companies.company_id`)
+     res.render("customers/index",{
+        customers
+     });
     });
+
+    app.get('/customers/create',async (req,res) => {
+        const [companies] = await connection.execute(`SELECT company_id, name FROM Companies`)
+        res.render("customers/create", {
+            companies
+        })
+    })
+
+    app.post('/customers/create', async (req,res)=> {
+        const {first_name, last_name, rating, company_id} = req.body
+        const sql = `INSERT INTO Customers (first_name, last_name, rating, company_id)
+VALUES(?,?,?,?);`
+        const bindings = [first_name, last_name, rating, company_id];
+        await connection.execute(sql,bindings)
+
+        res.redirect('/customers');
+        console.log(req.body);
+    })
+    
     
 }
 main();
