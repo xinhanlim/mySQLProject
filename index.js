@@ -26,10 +26,28 @@ async function main(){
     })
 
     app.get('/customers', async (req,res) => {
-     let [customers] = await connection.execute(`SELECT * FROM Customers
-    JOIN Companies ON Customers.company_id = Companies.company_id`)
+    
+      const {first_name,last_name} = req.query;
+
+      let basicQuery = `SELECT * FROM Customers
+    JOIN Companies ON Customers.company_id = Companies.company_id WHERE 1`
+
+    const bindings = [];
+
+    if(first_name){
+        basicQuery += " AND first_name = ?";
+        bindings.push(first_name);
+    };
+    
+    if(last_name){
+        basicQuery += " AND last_name = ?";
+        bindings.push(last_name);
+    }
+
+     let [customers] = await connection.execute(basicQuery, bindings);
      res.render("customers/index",{
-        customers
+        customers,
+        first_name, last_name
      });
     });
 
